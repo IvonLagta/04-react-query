@@ -1,7 +1,7 @@
 import axios, { AxiosResponse } from "axios";
 import { TMDBSearchResponse } from "../types/movie";
 
-const ACCESS_TOKEN = ${{ secrets.VITE_TMDB_ACCESS_TOKEN }};
+const ACCESS_TOKEN = import.meta.env.VITE_TMDB_ACCESS_TOKEN;
 const BASE_URL = "https://api.themoviedb.org/3";
 
 export const fetchMovies = async (
