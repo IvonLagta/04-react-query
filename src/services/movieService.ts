@@ -12,7 +12,7 @@ export const fetchMovies = async (
     `${BASE_URL}/search/movie`,
     {
       headers: {
-        Authorization: `Bearer ${import.meta.env.VITE_TMDB_TOKEN}`,
+        Authorization: `Bearer ${import.meta.env.VITE_TMDB_ACCESS_TOKEN}`,
       },
       params: {
         query: query,
