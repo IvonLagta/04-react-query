@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Toaster } from "react-hot-toast";
+import { Toaster, toast } from "react-hot-toast";
 import ReactPaginateModule from "react-paginate";
 import SearchBar from "../SearchBar/SearchBar";
 import MovieGrid from "../MovieGrid/MovieGrid";
@@ -8,8 +8,9 @@ import Loader from "../Loader/Loader";
 import ErrorMessage from "../ErrorMessage/ErrorMessage";
 import MovieModal from "../MovieModal/MovieModal";
 import { fetchMovies } from "../../services/movieService";
-import { Movie, TMDBSearchResponse } from "../../types/movie";
+import { Movie } from "../../types/movie";
 import css from "./App.module.css";
+import { TMDBSearchResponse } from "../../services/movieService";
 
 const ReactPaginate =
   (ReactPaginateModule as any)?.default ?? ReactPaginateModule;
@@ -19,7 +20,7 @@ const App = () => {
   const [page, setPage] = useState<number>(1);
   const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
 
-  const { data, isLoading, isError } = useQuery<TMDBSearchResponse>({
+  const { data, isLoading, isError, isSuccess } = useQuery<TMDBSearchResponse>({
     queryKey: ["movies", query, page],
     queryFn: () => fetchMovies(query, page),
     enabled: !!query.trim(),
@@ -28,6 +29,12 @@ const App = () => {
 
   const movies = data?.results || [];
   const totalPages = data?.total_pages || 0;
+
+  useEffect(() => {
+    if (isSuccess && movies.length === 0) {
+      toast.error("No movies found");
+    }
+  }, [isSuccess, movies.length]);
 
   const handleSearchSubmit = (searchQuery: string) => {
     if (searchQuery.trim() === query.trim()) return;
@@ -39,8 +46,7 @@ const App = () => {
     setPage(selected + 1);
   };
 
-  const handleSelectMovie = (movieId: number) => {
-    const movie = movies.find((m) => m.id === movieId) || null;
+  const handleSelectMovie = (movie: Movie) => {
     setSelectedMovie(movie);
   };
 

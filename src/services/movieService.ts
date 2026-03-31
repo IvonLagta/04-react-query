@@ -1,8 +1,15 @@
 import axios, { AxiosResponse } from "axios";
-import { TMDBSearchResponse } from "../types/movie";
+import { Movie } from "../types/movie";
 
-// const ACCESS_TOKEN = import.meta.env.VITE_TMDB_TOKEN;
+const ACCESS_TOKEN = import.meta.env.VITE_TMDB_ACCESS_TOKEN;
 const BASE_URL = "https://api.themoviedb.org/3";
+
+export interface TMDBSearchResponse {
+  page: number;
+  results: Movie[];
+  total_pages: number;
+  total_results: number;
+}
 
 export const fetchMovies = async (
   query: string,
@@ -12,7 +19,7 @@ export const fetchMovies = async (
     `${BASE_URL}/search/movie`,
     {
       headers: {
-        Authorization: `Bearer ${import.meta.env.VITE_TMDB_ACCESS_TOKEN}`,
+        Authorization: `Bearer ${ACCESS_TOKEN}`,
       },
       params: {
         query: query,
